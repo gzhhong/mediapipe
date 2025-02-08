@@ -1,3 +1,2 @@
-
 IMAGE_EDGE = 224
 
