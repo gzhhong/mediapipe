@@ -16,7 +16,7 @@ There are only 25 epochs and will take less than 1 minutes
 The hand_landmark_model_float16.tflite is converted from hand_landmark_model.keras by convert_to_tflite.py.
 
 ## test
-You can then test the tflite model and keras model by test_model.py. There will be two images presenting the keras model and tflite model results. You can see the keras model can give z axis more accurate ( it can give negative value), when more data added, keras model can give accurate predictions on x, y, and z axis. But the tflite model always give positive value on z-axis, when more training data added, the output of z-axis of tflite model will close to zero, but never be negative, while its predictions on x, y are more and more accurate, as the keras model.
+You can then test the tflite model and keras model by test_model.py. There will be two images presenting the keras model and tflite model results. You can see the keras model can give z axis more accurate ( it can give negative value), when more data added, keras model can give accurate predictions on x, y, and z axis. But the tflite model always give positive value on z-axis, when more training data added, the output of z-axis of tflite model will close to zero, but never be negative, while its predictions on x, y are more and more accurate, as the keras model. The test result in convert_to_tflite shows the predictions on z-axis of tflite models are always 0.
 
 ## Issue
 The tflite model can not give negative value for z-axis, it always give positive value, even when more training data added.
