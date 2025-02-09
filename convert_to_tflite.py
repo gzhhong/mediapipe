@@ -69,6 +69,9 @@ def test_tflite_model(model_path, test_image_path):
     # use the same preprocessing as during training
     processed_img, original_landmarks = process_image_and_coords(img, original_landmarks, target_size=(IMAGE_EDGE, IMAGE_EDGE))
     
+    # Reshape original_landmarks to match the predicted landmarks shape
+    original_landmarks = np.array(original_landmarks).reshape(21, 3)
+
     # add batch dimension
     processed_img = np.expand_dims(processed_img, axis=0)
     
@@ -81,15 +84,14 @@ def test_tflite_model(model_path, test_image_path):
     
     # get output and reshape to (21, 3)
     landmarks = interpreter.get_tensor(output_details[0]['index'])
-    # print landmarks
-    print(f"predict-landmarks: {landmarks}")
     landmarks = landmarks.reshape(-1, 21, 3)
     
     # limit coordinates to [0,1] range
     landmarks[..., :2] = np.clip(landmarks[..., :2], 0, 1)
     landmarks[..., 2] = np.clip(landmarks[..., 2], -1, 0)
-    # print landmarks and original_landmarks and their mae
-    mae = np.mean(np.abs(landmarks - original_landmarks), axis=0)
+    
+    # Calculate MAE between predicted and original landmarks
+    mae = np.mean(np.abs(landmarks[0] - original_landmarks), axis=0)
     print(f"landmarks: {landmarks}")
     print(f"original_landmarks: {original_landmarks}")
     print(f"mae: {mae}")
@@ -214,7 +216,7 @@ def create_metadata():
     # create metadata buffer
     builder = flatbuffers.Builder(0)
     metadata_buf = metadata_model.Pack(builder)
-    builder.Finish(metadata_buf)
+    builder.Finish(metadata_buf, _metadata.MetadataPopulator.METADATA_FILE_IDENTIFIER)
     return bytes(builder.Output())
 
 def add_metadata_to_model(model_buffer):
@@ -405,7 +407,7 @@ def main():
     
     # if all conversions are successful, test the models
     if float16_success and dynamic_success and float32_success:
-        test_image_path = './recorded_frames/training/frame_20250121_103734_198532_mr.jpg'
+        test_image_path = './training/frame_20250121_103737_986144_mr.jpg'
         if Path(test_image_path).exists():
             print("\ntesting all converted models:")
             print("\n1. testing float16 model")
