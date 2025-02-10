@@ -83,7 +83,9 @@ def test_tflite_model(model_path, test_image_path):
     interpreter.invoke()
     
     # get output and reshape to (21, 3)
-    landmarks = interpreter.get_tensor(output_details[0]['index'])
+    landmarks = interpreter.get_tensor(output_details[2]['index'])
+    # print landmarks
+    print(f"predicted landmarks: {landmarks}")
     landmarks = landmarks.reshape(-1, 21, 3)
     
     # limit coordinates to [0,1] range

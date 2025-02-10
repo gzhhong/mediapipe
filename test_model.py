@@ -130,10 +130,10 @@ def test_tflite_model(model_path):
         interpreter.invoke()
         
         # get output
-        landmarks_output = interpreter.get_tensor(output_details[0]['index'])
+        landmarks_output = interpreter.get_tensor(output_details[2]['index'])
         
         print(f"Input shape (TFLite): {input_details[0]['shape']}")
-        print(f"Output shape (TFLite): {output_details[0]['shape']}")
+        print(f"Output shape (TFLite): {output_details[2]['shape']}")
         print(f"Landmarks output (TFLite): {landmarks_output}")
         # calculate error
         true_reshaped = tf.reshape(true_landmarks, [-1, 21, 3])
